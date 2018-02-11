@@ -7,18 +7,17 @@
  	<link rel="stylesheet" href="style.css"/>
  	<script type="application/javascript" src="script.js"></script>
 </head>
-<body>
+<body onload="createLog()">
 	<div class="sectionHeader"><span class="header ver2"><em>Symantec Log based User Stats</em></span></div>
 	<div style="width: 100%;">
 	    <div style="float:left; width: 50%;">
 	    	<h2>Upload a log file (.log)</h2>
-			<input type="file" id="myFile" onchange="parseFile()"><br>
-			<h4>No. Of Users to Display on Pie Chart</h4>
+			<span><input type="file" id="myFile" onchange="parseFile()"><p id= "fileUserSize"></p></span>
+			<h4>No. of Users to Display on Pie Chart</h4>
 			<input id="number" type="number" onchange="parseFile()"><br><br>
-			<!-- <textarea id="data" style="height: 200px; width: 400px"></textarea> -->
 			<table id="stats" style= "visibility: hidden">
 				<thead><tr><th>Username</th><th>Page Views</th></tr></thead><tbody></tbody>
-			</table>
+			</table><br><br>
 
 	    </div>
 	    <div style="float:right; width: 50%">
@@ -26,6 +25,11 @@
 			</svg>
 	    </div>
 	</div>
-	
+	<hr width="100%">
+	<div id="footer">
+		<input type="checkbox" id="displayLog" onchange="displayLog(this)">
+    	<label for="displayLog">Show Logs?</label>
+		<div id="log" style="visibility: hidden"></div>
+	</div>
 </body>
 </html>
