@@ -6,7 +6,7 @@ function cleanUp () { // helps in clean up process
 	d3.selectAll("table.tbody.tr").remove(); // removing all the table data on clean up
 	d3.select("#piechart").selectAll("g").remove(); // removing all pie chart elements on clean up
 	d3.select("table").attr("style", "visibility: hidden"); // hiding the empty table
-	d3.select("#fileUserSize").select("text").text(""); // removing file size text display field
+	d3.select("#fileUserSize").selectAll("text").text(""); // removing file size text display field
 }
 
 function parseFile() {
@@ -118,6 +118,8 @@ function analyzeData(target, lines)
 				return parseInt(b.count) - parseInt(a.count);
 			})
 
+			let totalUser = final.length;
+
 			let limiter = 25; // pie chart becomes clumsy on last number of slices // limiting the number
 			let num = document.getElementById('number').value; // user entered number
 			
@@ -154,7 +156,7 @@ function analyzeData(target, lines)
 				final = trimFinal;
 			}
 		
-			let table = new Table()
+			let table = new Table(totalUser)
 			table.createTable(final) // creating a table for the calculated values
 		
 			let chart = new PiChart()
@@ -167,17 +169,15 @@ function analyzeData(target, lines)
 }
 
 class Table {
-	constructor()
+	constructor(data)
 	{
 		this.table = d3.select("table");
 		this.table.attr("style", "visibility: visible");
-		d3.select("#fileUserSize").append("text");
+		d3.select("#fileUserSize").selectAll("text").text(d=>"Total Number of Users: " + data);
 	}
 
 	createTable(data)
 	{
-		d3.select("#fileUserSize").select("text").text(d=>"Total Number of Users: " + data.length);
-
 		let tr = this.table.select("tbody").selectAll("tr").data(data);
 		let newTr = tr.enter().append("tr");
 		tr.exit().remove();
@@ -310,6 +310,7 @@ function displayLog(checkboxElem) {
 function createLog()
 {
 	let log = d3.select("#log").selectAll("text").data([""]);
+	d3.select("#fileUserSize").append("text");
 	writelog("Log:")
 }
 
@@ -320,4 +321,7 @@ window.onbeforeunload = function(e) {
 function writelog(data)
 {
 	let log = d3.select("#log").append("p").html(data); // writing to the log section
+}
+
+function displayUsers(data){
 }
