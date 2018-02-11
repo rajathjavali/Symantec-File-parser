@@ -1,6 +1,6 @@
 
 
-// all testing done on latest chrome browser
+// all testing done on latest chrome browser {Version 64.0.3282.119 (Official Build) (64-bit)}
 
 function cleanUp () { // helps in clean up process
 	d3.selectAll("table.tbody.tr").remove(); // removing all the table data on clean up
