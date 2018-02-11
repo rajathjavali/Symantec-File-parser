@@ -2,8 +2,7 @@
 function parseFile() {
 	const input = document.getElementById("myFile");
   if ('files' in input && input.files.length > 0) {
-	  //placeFileContent(document.getElementById('data'), input.files[0]);
-	  readFileContent(document.getElementById('data'), input.files[0]);
+	readFileContent(document.getElementById('data'), input.files[0]);
   }
 }
 
@@ -29,6 +28,7 @@ function readFileContent(target, file) {
 
 function analyzeData(target, lines)
 {
+	d3.selectAll("table.tbody.tr").remove();
 	let data = {}, final = [], k = 0;
 
 	if(!lines) {
@@ -49,7 +49,12 @@ function analyzeData(target, lines)
 
 		for (let i in data){
 			if(i != "undefined")
-			final[k++] = {"key": i, "count": data[i]};
+			{
+				let string = i;
+				string = i[0].toUpperCase();
+				string += i.substring(1, i.length);
+				final[k++] = {"key": string, "count": data[i]};
+			}
 		}
 		
 		final.sort(function(a, b) {
@@ -80,9 +85,11 @@ class Table {
 		tr = newTr.merge(tr);
 
 		let td = tr.selectAll("td").data(d=>[d.key, d.count]);
-		let newTd = td.enter().append("td").text(d=>d);
+		let newTd = td.enter().append("td");
 		td.exit().remove();
 		td = newTd.merge(td);
+
+		td.text(d=>d);
 		//let table = d3.select("table").data(data);
 
 	}
@@ -105,8 +112,6 @@ class PiChart
 	{
 		let _this = this;
 
-		
-
 		function midAngle(d){
 			return d.startAngle + (d.endAngle - d.startAngle)/2;
 		}
@@ -126,35 +131,25 @@ class PiChart
 		arc.exit().remove();
 		arc = newArc.merge(arc);
 		
-		arc.append("path").attr("d", path).attr("fill", function(d) { return "gray"; });;
+		let slice = arc.selectAll("path").data(function(d){return d3.select(this).data();})
+		let newslice = slice.enter().append("path")
 
-		let text = arc.selectAll("text").enter().data(function(d){return d3.select(this).data();});
+		slice.exit().remove()
+		slice = newslice.merge(slice);
+
+		slice.attr("d", path).attr("fill", function(d) { return "gray"; });;
+
+		let text = arc.selectAll("text").data(function(d){return d3.select(this).data();});
 		let newtxt = text.enter().append("text")
 
 		text.exit().remove()
 		text = newtxt.merge(text);
 
-		text//.attr("transform", function(d){ return "translate(" + label.centroid(d) + ")";})
-			.attr("dy", "0.35em").text(function(d){ return d.data.key + " " + d.data.count ;})
+		text.attr("dy", "0.35em").text(function(d){ return d.data.key + " " + d.data.count ;})
 			.attr("transform", function (d) {
-                return "rotate(" + (midAngle(d) * 180 / Math.PI - 90) + ") translate(" + _this.outerRadius + ",0)";
+				let rotation = (midAngle(d) * 180 / Math.PI - 90)
+                return "rotate(" + rotation + ") translate(" + _this.outerRadius + ",0)";
             });
 
 	}
 }
-
-
-/*function placeFileContent(target, file) {
-	readFileContent(file).then(content => {
-  	target.value = content
-  }).catch(error => console.log(error))
-}
-
-function readFileContent(file) {
-	const reader = new FileReader()
-  return new Promise((resolve, reject) => {
-    reader.onload = event => resolve(event.target.result)
-    reader.onerror = error => reject(error)
-    reader.readAsText(file)
-  })
-}*/
