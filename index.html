@@ -12,8 +12,9 @@
 	<div style="width: 100%;">
 	    <div style="float:left; width: 50%;">
 	    	<h2>Upload a log file (.log)</h2>
-			<input type="file" id="myFile" onchange="parseFile()"><br><br>
-
+			<input type="file" id="myFile" onchange="parseFile()"><br>
+			<h4>No. Of Users to Display on Pie Chart</h4>
+			<input id="number" type="number" onchange="parseFile()"><br><br>
 			<!-- <textarea id="data" style="height: 200px; width: 400px"></textarea> -->
 			<table id="stats" style= "visibility: hidden">
 				<thead><tr><th>Username</th><th>Page Views</th></tr></thead><tbody></tbody>
