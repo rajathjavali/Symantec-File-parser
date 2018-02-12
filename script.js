@@ -105,10 +105,13 @@ function analyzeData(target, lines)
 				return;
 			}
 
+			let totalPageViews = 0;
+
 			for (let i in data){
 				let string = i;
 				string = i[0].toUpperCase(); // making the first letter of username CAPS
 				string += i.substring(1, i.length);
+				totalPageViews += data[i];
 				final[finalArryIndex++] = {"key": string, "count": data[i]}; // each user now has an object associated
 			}
 			
@@ -159,7 +162,7 @@ function analyzeData(target, lines)
 			let table = new Table(totalUser)
 			table.createTable(final) // creating a table for the calculated values
 		
-			let chart = new PiChart()
+			let chart = new PiChart(totalPageViews)
 			chart.createChart(final) // creating pichart for the calculated values
 		} catch(error) {
 			cleanUp();
@@ -194,7 +197,7 @@ class Table {
 
 class PiChart
 {
-	constructor()
+	constructor(data)
 	{
 		this.chart = d3.select("#piechart");
 		let width = this.chart.node().getBoundingClientRect().width;
@@ -202,6 +205,7 @@ class PiChart
 		this.outerRadius = Math.min(width, height) * 0.5 - 40;
 		this.radius = Math.min(width, height) / 2 - 20;
 		this.chart.append("g").attr("class", "piChart").attr("transform", "translate(" + (width / 2 + 10) + "," + height / 2 + ")");
+		this.totalPageViews = data;
 
 	}
 
@@ -240,7 +244,7 @@ class PiChart
 		arc.attr("class", "arc")
 			.on("mouseover", function(e) {
 				d3.selectAll(".arc").attr("style", "opacity: 0.3;");
-				d3.select(this).style("opacity", 1).append("title").text("Page Views: " + e.data.count);
+				d3.select(this).style("opacity", 1).append("title").text( (e.data.count/_this.totalPageViews * 100).toFixed(2) +"%");
 			})
 			.on("mouseout", function(e) {
 				d3.selectAll(".arc").attr("style", "opacity: 1");
